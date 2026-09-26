@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Haritası | TÜBİTAK 1001 - 124K147</title>
+  <meta name="description" content="Web sitesinin yapısal kurgusu, içerik organizasyonu ve kullanıcı yönlendirmeleri - TÜBİTAK 1001 Projesi 124K147">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ===== SITEMAP PAGE STYLES ===== */
+
+    /* Page intro */
+    .sitemap-intro {
+      background: var(--primary-dark);
+      color: #fff;
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+    .sitemap-intro h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .sitemap-intro p {
+      font-size: 1.05rem;
+      color: #b8cfe0;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    /* ===== SITE TREE ===== */
+    .tree-section {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow);
+    }
+    .tree-section h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    /* Root node */
+    .tree {
+      font-size: 0.95rem;
+    }
+    .tree-root {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .tree-node-root {
+      background: var(--primary);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 0.85rem 1.75rem;
+      font-weight: 700;
+      font-size: 1rem;
+      text-align: center;
+      position: relative;
+      box-shadow: var(--shadow);
+    }
+    .tree-node-root::after {
+      content: '';
+      position: absolute;
+      bottom: -1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 1.25rem;
+      background: var(--border);
+    }
+
+    /* Children row */
+    .tree-children {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      position: relative;
+      margin-top: 1.25rem;
+    }
+    .tree-children::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 6rem);
+      height: 2px;
+      background: var(--border);
+    }
+
+    /* Child node */
+    .tree-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .tree-node::before {
+      content: '';
+      width: 2px;
+      height: 1.25rem;
+      background: var(--border);
+      margin-bottom: 0;
+    }
+    .tree-node-card {
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.7rem 1.1rem;
+      text-align: center;
+      min-width: 130px;
+      background: var(--bg-white);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      cursor: default;
+    }
+    .tree-node-card:hover {
+      border-color: var(--primary-light);
+      box-shadow: var(--shadow);
+    }
+    .tree-node-card .node-icon {
+      font-size: 1.4rem;
+      margin-bottom: 0.3rem;
+    }
+    .tree-node-card .node-label {
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 0.88rem;
+      display: block;
+    }
+    .tree-node-card .node-file {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: monospace;
+      margin-top: 0.15rem;
+    }
+    .tree-node-card.active-page {
+      border-color: var(--accent);
+    }
+    .tree-node-card.active-page .node-label {
+      color: var(--accent);
+    }
+
+    /* ===== PAGE CARDS GRID ===== */
+    .page-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .page-detail-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: box-shadow var(--transition);
+    }
+    .page-detail-card:hover {
+      box-shadow: var(--shadow-lg);
+    }
+    .page-detail-card .pd-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-detail-card .pd-icon {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+    .page-detail-card .pd-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .page-detail-card .pd-file {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+    .page-detail-card .pd-desc {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      margin-bottom: 1rem;
+    }
+    .pd-contents {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .pd-contents li {
+      font-size: 0.85rem;
+      color: var(--text);
+      padding: 0.3rem 0;
+      border-bottom: 1px dashed var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .pd-contents li:last-child {
+      border-bottom: none;
+    }
+    .pd-contents li::before {
+      content: '▸';
+      color: var(--primary-light);
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+    .pd-link {
+      display: inline-block;
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--primary-light);
+      border: 1px solid var(--primary-light);
+      border-radius: 4px;
+      padding: 0.3rem 0.75rem;
+      transition: background var(--transition), color var(--transition);
+    }
+    .pd-link:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* ===== USER JOURNEYS ===== */
+    .journey-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .journey-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow);
+    }
+    .journey-card .jc-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+    .journey-card .jc-persona {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+    .journey-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .journey-step {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+    .journey-step .step-num {
+      background: var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .journey-arrow {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-left: 9px;
+    }
+
+    /* ===== ASSETS TABLE ===== */
+    .assets-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .assets-table th {
+      background: var(--primary);
+      color: #fff;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+    .assets-table td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .assets-table tr:last-child td {
+      border-bottom: none;
+    }
+    .assets-table tr:nth-child(even) td {
+      background: var(--bg);
+    }
+    .assets-table code {
+      font-family: monospace;
+      font-size: 0.82rem;
+      background: var(--bg);
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      color: var(--primary-light);
+    }
+    .badge-page   { background: #e8f4fd; color: #1a5276; }
+    .badge-style  { background: #eafaf1; color: #1e8449; }
+    .badge-script { background: #fef9e7; color: #7d6608; }
+    .badge-plan   { background: #f4ecf7; color: #6c3483; }
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .tree-children {
+        gap: 0.5rem;
+      }
+      .tree-children::before {
+        display: none;
+      }
+      .tree-node-card {
+        min-width: 100px;
+        padding: 0.5rem 0.75rem;
+      }
+      .sitemap-intro h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <span class="logo-badge">TÜBİTAK 1001</span>
+        <span>Proje 124K147</span>
+      </a>
+      <button class="nav-toggle" aria-label="Menüyü aç/kapat" aria-expanded="false">&#9776;</button>
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="about.html">Proje Hakkında</a></li>
+          <li><a href="team.html">Ekip</a></li>
+          <li><a href="methodology.html">Yöntem</a></li>
+          <li><a href="updates.html">Gelişmeler</a></li>
+          <li><a href="results.html">Sonuçlar</a></li>
+          <li><a href="contact.html">İletişim</a></li>
+          <li><a href="sitemap.html" class="active">Web Haritası</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- PAGE INTRO -->
+  <div class="sitemap-intro">
+    <h1>&#128506; Web Haritası</h1>
+    <p>Web sitesinin yapısal kurgusu, içerik organizasyonu ve kullanıcı yönlendirmeleri</p>
+  </div>
+
+  <section class="section">
+    <div class="section-inner">
+
+      <!-- 1. SITE TREE -->
+      <div class="tree-section">
+        <h2>&#127968; Site Hiyerarşisi</h2>
+        <div class="tree">
+          <div class="tree-root">
+            <div class="tree-node-root">TÜBİTAK 1001 — 124K147<br><small style="font-weight:400;opacity:.8;">Proje Web Sitesi</small></div>
+          </div>
+          <div class="tree-children">
+            <div class="tree-node">
+              <div class="tree-node-card">
+                <div class="node-icon">&#127968;</div>
+                <span class="node-label">Anasayfa</span>
+                <div class="node-file">index.html</div>
+              </div>
+            </div>
+            <div class="tree-node">
+              <div class="tree-node-card">
+                <div class="node-icon">&#128218;</div>
+                <span class="node-label">Proje Hakkında</span>
+                <div class="node-file">about.html</div>
+              </div>
+            </div>
+            <div class="tree-node">
+              <div class="tree-node-card">
+                <div class="node-icon">&#128101;</div>
+                <span class="node-label">Ekip</span>
+                <div class="node-file">team.html</div>
+              </div>
+            </div>
+            <div class="tree-node">
+              <div class="tree-node-card">
+                <div class="node-icon">&#128300;</div>
+                <span class="node-label">Yöntem</span>
+                <div class="node-file">methodology.html</div>
+              </div>
+            </div>
+            <div class="tree-node">
+              <div class="tree-node-card">
+                <div class="node-icon">&#128240;</div>
+                <span class="node-label">Gelişmeler</span>
+                <div class="node-file">updates.html</div>
+              </div>
+            </div>
+            <div class="tree-node">
+              <div class="tree-node-card">
+                <div class="node-icon">&#128202;</div>
+                <span class="node-label">Sonuçlar</span>
+                <div class="node-file">results.html</div>
+              </div>
+            </div>
+            <div class="tree-node">
+              <div class="tree-node-card">
+                <div class="node-icon">&#128231;</div>
+                <span class="node-label">İletişim</span>
+                <div class="node-file">contact.html</div>
+              </div>
+            </div>
+            <div class="tree-node">
+              <div class="tree-node-card active-page">
+                <div class="node-icon">&#128506;</div>
+                <span class="node-label">Web Haritası</span>
+                <div class="node-file">sitemap.html</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. PAGE CONTENT CARDS -->
+      <h2 class="section-title">İçerik Organizasyonu</h2>
+      <p class="section-subtitle">Her sayfanın amacı ve barındırdığı içerik bölümleri</p>
+
+      <div class="page-cards-grid">
+
+        <div class="page-detail-card">
+          <div class="pd-header">
+            <span class="pd-icon">&#127968;</span>
+            <div>
+              <div class="pd-title">Anasayfa</div>
+              <div class="pd-file">index.html</div>
+            </div>
+          </div>
+          <p class="pd-desc">Ziyaretçinin ilk karşılaştığı sayfa. Projeyi tanıtır ve diğer sayfalara yönlendirir.</p>
+          <ul class="pd-contents">
+            <li>Hero — Proje başlığı ve kısa açıklama</li>
+            <li>Anahtar kelimeler bandı</li>
+            <li>Proje genel bakış (4 sayısal özet)</li>
+            <li>Hızlı yönlendirme kartları (4 sayfa)</li>
+            <li>TÜBİTAK destek banner'ı</li>
+          </ul>
+          <a href="index.html" class="pd-link">Sayfayı aç &#8594;</a>
+        </div>
+
+        <div class="page-detail-card">
+          <div class="pd-header">
+            <span class="pd-icon">&#128218;</span>
+            <div>
+              <div class="pd-title">Proje Hakkında</div>
+              <div class="pd-file">about.html</div>
+            </div>
+          </div>
+          <p class="pd-desc">Projenin bilimsel arka planı, amaçları ve özgün katkısı hakkında detaylı bilgi.</p>
+          <ul class="pd-contents">
+            <li>Projenin amacı ve kapsamı</li>
+            <li>Özgün değer ve motivasyon</li>
+            <li>Araştırma soruları</li>
+            <li>Çalışma 1 ve Çalışma 2 özeti</li>
+            <li>Beklenen çıktılar ve etkiler</li>
+          </ul>
+          <a href="about.html" class="pd-link">Sayfayı aç &#8594;</a>
+        </div>
+
+        <div class="page-detail-card">
+          <div class="pd-header">
+            <span class="pd-icon">&#128101;</span>
+            <div>
+              <div class="pd-title">Araştırma Ekibi</div>
+              <div class="pd-file">team.html</div>
+            </div>
+          </div>
+          <p class="pd-desc">Proje ekibini oluşturan araştırmacılar, danışman ve bursiyerlerin tanıtımı.</p>
+          <ul class="pd-contents">
+            <li>Proje yürütücüsü (Doç. Dr. Duygu Mutlu Bayraktar)</li>
+            <li>Araştırmacılar (4 kişi) — uzmanlık ve iş paketleri</li>
+            <li>Danışman (Bülent YILMAZ)</li>
+            <li>Bursiyerler placeholder</li>
+          </ul>
+          <a href="team.html" class="pd-link">Sayfayı aç &#8594;</a>
+        </div>
+
+        <div class="page-detail-card">
+          <div class="pd-header">
+            <span class="pd-icon">&#128300;</span>
+            <div>
+              <div class="pd-title">Yöntem ve Çalışma Süreci</div>
+              <div class="pd-file">methodology.html</div>
+            </div>
+          </div>
+          <p class="pd-desc">Araştırma deseninin, veri toplama araçlarının ve 10 iş paketinin açıklanması.</p>
+          <ul class="pd-contents">
+            <li>2×2 faktöriyel desen tablosu</li>
+            <li>Bağımlı / bağımsız değişkenler</li>
+            <li>Veri toplama araçları (EEG, göz izleme, testler)</li>
+            <li>Analiz yöntemleri (istatistik + YSA)</li>
+            <li>10 iş paketi zaman çizelgesi (36 ay)</li>
+          </ul>
+          <a href="methodology.html" class="pd-link">Sayfayı aç &#8594;</a>
+        </div>
+
+        <div class="page-detail-card">
+          <div class="pd-header">
+            <span class="pd-icon">&#128240;</span>
+            <div>
+              <div class="pd-title">Proje Gelişmeleri</div>
+              <div class="pd-file">updates.html</div>
+            </div>
+          </div>
+          <p class="pd-desc">Projede tamamlanan aşamaların fotoğraf ve videolarla duyurulduğu güncelleme sayfası.</p>
+          <ul class="pd-contents">
+            <li>Pilot uygulama duyurusu ve temel sayılar</li>
+            <li>Pilot uygulama fotoğraf galerisi</li>
+            <li>Ön bulgular ve ana çalışma hazırlıkları</li>
+            <li>Dört deneysel koşula ait örnek videolar</li>
+          </ul>
+          <a href="updates.html" class="pd-link">Sayfayı aç &#8594;</a>
+        </div>
+
+        <div class="page-detail-card">
+          <div class="pd-header">
+            <span class="pd-icon">&#128202;</span>
+            <div>
+              <div class="pd-title">Sonuçlar ve Yayınlar</div>
+              <div class="pd-file">results.html</div>
+            </div>
+          </div>
+          <p class="pd-desc">Proje devam ederken beklenen çıktıları ve ileride eklenecek yayın listesini barındırır.</p>
+          <ul class="pd-contents">
+            <li>Proje durum banner'ı</li>
+            <li>Beklenen çıktılar zaman çizelgesi</li>
+            <li>Yayın listesi (placeholder)</li>
+            <li>Çalıştay bilgisi</li>
+          </ul>
+          <a href="results.html" class="pd-link">Sayfayı aç &#8594;</a>
+        </div>
+
+        <div class="page-detail-card">
+          <div class="pd-header">
+            <span class="pd-icon">&#128231;</span>
+            <div>
+              <div class="pd-title">İletişim</div>
+              <div class="pd-file">contact.html</div>
+            </div>
+          </div>
+          <p class="pd-desc">Proje yürütücüsüne ve kuruma ulaşmak için iletişim bilgileri.</p>
+          <ul class="pd-contents">
+            <li>Proje yürütücüsü bilgileri</li>
+            <li>Kurum adresi ve iletişim bilgileri</li>
+            <li>Proje bilgi tablosu</li>
+            <li>E-posta yönlendirmesi</li>
+          </ul>
+          <a href="contact.html" class="pd-link">Sayfayı aç &#8594;</a>
+        </div>
+
+        <div class="page-detail-card">
+          <div class="pd-header">
+            <span class="pd-icon">&#128506;</span>
+            <div>
+              <div class="pd-title">Web Haritası</div>
+              <div class="pd-file">sitemap.html</div>
+            </div>
+          </div>
+          <p class="pd-desc">Web sitesinin yapısal kurgusu, içerik organizasyonu ve kullanıcı yönlendirmeleri.</p>
+          <ul class="pd-contents">
+            <li>Site hiyerarşisi görselleştirmesi</li>
+            <li>Her sayfa için içerik özeti</li>
+            <li>Kullanıcı yönlendirme senaryoları</li>
+            <li>Dosya ve varlık listesi</li>
+          </ul>
+          <a href="sitemap.html" class="pd-link">Bu sayfa</a>
+        </div>
+
+      </div>
+
+      <!-- 3. USER JOURNEYS -->
+      <div class="tree-section">
+        <h2>&#128100; Kullanıcı Yönlendirme Senaryoları</h2>
+        <div class="journey-grid">
+
+          <div class="journey-card">
+            <div class="jc-title">Akademisyen / Araştırmacı</div>
+            <div class="jc-persona">Projenin bilimsel içeriğini inceleyen ziyaretçi</div>
+            <div class="journey-steps">
+              <div class="journey-step"><span class="step-num">1</span>Anasayfa — proje özetine göz atar</div>
+              <div class="journey-arrow">↓</div>
+              <div class="journey-step"><span class="step-num">2</span>Proje Hakkında — araştırma sorularını okur</div>
+              <div class="journey-arrow">↓</div>
+              <div class="journey-step"><span class="step-num">3</span>Yöntem — faktöriyel desen ve EEG detayları</div>
+              <div class="journey-arrow">↓</div>
+              <div class="journey-step"><span class="step-num">4</span>Sonuçlar — yayın listesini kontrol eder</div>
+            </div>
+          </div>
+
+          <div class="journey-card">
+            <div class="jc-title">TÜBİTAK / Değerlendirici</div>
+            <div class="jc-persona">Proje çıktılarını takip eden fon yöneticisi</div>
+            <div class="journey-steps">
+              <div class="journey-step"><span class="step-num">1</span>Anasayfa — proje numarasını ve kurumu doğrular</div>
+              <div class="journey-arrow">↓</div>
+              <div class="journey-step"><span class="step-num">2</span>Yöntem — iş paketleri ve zaman çizelgesi</div>
+              <div class="journey-arrow">↓</div>
+              <div class="journey-step"><span class="step-num">3</span>Sonuçlar — yayınlar ve çıktılar</div>
+              <div class="journey-arrow">↓</div>
+              <div class="journey-step"><span class="step-num">4</span>İletişim — proje yürütücüsüne ulaşır</div>
+            </div>
+          </div>
+
+          <div class="journey-card">
+            <div class="jc-title">Öğretmen / Eğitimci</div>
+            <div class="jc-persona">Çoklu ortam öğrenimi konusunda ilgilenen paydaş</div>
+            <div class="journey-steps">
+              <div class="journey-step"><span class="step-num">1</span>Anasayfa — anahtar kelimelerle konuyu kavrar</div>
+              <div class="journey-arrow">↓</div>
+              <div class="journey-step"><span class="step-num">2</span>Proje Hakkında — özgün değeri anlar</div>
+              <div class="journey-arrow">↓</div>
+              <div class="journey-step"><span class="step-num">3</span>Ekip — araştırmacıların uzmanlığını görür</div>
+              <div class="journey-arrow">↓</div>
+              <div class="journey-step"><span class="step-num">4</span>İletişim — iş birliği için ulaşır</div>
+            </div>
+          </div>
+
+          <div class="journey-card">
+            <div class="jc-title">Lisansüstü Öğrenci</div>
+            <div class="jc-persona">Projede bursiyer olmak veya kaynak aramak isteyen öğrenci</div>
+            <div class="journey-steps">
+              <div class="journey-step"><span class="step-num">1</span>Anasayfa — projeyi tanır</div>
+              <div class="journey-arrow">↓</div>
+              <div class="journey-step"><span class="step-num">2</span>Ekip — danışman ve araştırmacıları inceler</div>
+              <div class="journey-arrow">↓</div>
+              <div class="journey-step"><span class="step-num">3</span>Yöntem — görev kapsamını öğrenir</div>
+              <div class="journey-arrow">↓</div>
+              <div class="journey-step"><span class="step-num">4</span>İletişim — başvuru için e-posta gönderir</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 4. FILE ASSETS TABLE -->
+      <div class="tree-section">
+        <h2>&#128196; Dosya Yapısı ve Varlıklar</h2>
+        <div style="overflow-x:auto;">
+          <table class="assets-table">
+            <thead>
+              <tr>
+                <th>Dosya</th>
+                <th>Tür</th>
+                <th>Açıklama</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>index.html</code></td>
+                <td><span class="badge badge-page">Sayfa</span></td>
+                <td>Anasayfa — hero, anahtar kelimeler, genel bakış, yönlendirme kartları</td>
+              </tr>
+              <tr>
+                <td><code>about.html</code></td>
+                <td><span class="badge badge-page">Sayfa</span></td>
+                <td>Proje Hakkında — amaç, araştırma soruları, çalışmalar, beklenen çıktılar</td>
+              </tr>
+              <tr>
+                <td><code>team.html</code></td>
+                <td><span class="badge badge-page">Sayfa</span></td>
+                <td>Araştırma Ekibi — yürütücü, araştırmacılar, danışman, bursiyerler</td>
+              </tr>
+              <tr>
+                <td><code>methodology.html</code></td>
+                <td><span class="badge badge-page">Sayfa</span></td>
+                <td>Yöntem — faktöriyel desen, değişkenler, araçlar, analiz, 10 iş paketi</td>
+              </tr>
+              <tr>
+                <td><code>updates.html</code></td>
+                <td><span class="badge badge-page">Sayfa</span></td>
+                <td>Gelişmeler — pilot uygulama duyurusu, fotoğraf galerisi, deneysel materyal videoları</td>
+              </tr>
+              <tr>
+                <td><code>assets/img/</code>, <code>assets/video/</code></td>
+                <td><span class="badge badge-style">Medya</span></td>
+                <td>Gelişmeler sayfasında kullanılan fotoğraflar, video kapak görselleri ve deneysel koşul videoları</td>
+              </tr>
+              <tr>
+                <td><code>results.html</code></td>
+                <td><span class="badge badge-page">Sayfa</span></td>
+                <td>Sonuçlar — durum banner, çıktı zaman çizelgesi, yayın listesi (placeholder)</td>
+              </tr>
+              <tr>
+                <td><code>contact.html</code></td>
+                <td><span class="badge badge-page">Sayfa</span></td>
+                <td>İletişim — yürütücü bilgileri, kurum adresi, proje bilgi tablosu</td>
+              </tr>
+              <tr>
+                <td><code>sitemap.html</code></td>
+                <td><span class="badge badge-page">Sayfa</span></td>
+                <td>Web Haritası — yapısal kurgu, içerik organizasyonu, kullanıcı yönlendirmeleri</td>
+              </tr>
+              <tr>
+                <td><code>css/style.css</code></td>
+                <td><span class="badge badge-style">Stil</span></td>
+                <td>Global CSS — reset, değişkenler, header, footer, grid, bileşenler, responsive</td>
+              </tr>
+              <tr>
+                <td><code>js/main.js</code></td>
+                <td><span class="badge badge-script">Script</span></td>
+                <td>Mobil navigasyon toggle ve sayfa etkileşimleri</td>
+              </tr>
+              <tr>
+                <td><code>task_plan.md</code></td>
+                <td><span class="badge badge-plan">Plan</span></td>
+                <td>Proje fazları, kararlar ve ilerleme takibi</td>
+              </tr>
+              <tr>
+                <td><code>findings.md</code></td>
+                <td><span class="badge badge-plan">Plan</span></td>
+                <td>Proje dokümanı analiz bulguları — ekip, iş paketleri, araştırma özeti</td>
+              </tr>
+              <tr>
+                <td><code>progress.md</code></td>
+                <td><span class="badge badge-plan">Plan</span></td>
+                <td>Oturum bazlı ilerleme günlüğü</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>&copy; 2024 Proje 124K147 | İstanbul Üniversitesi-Cerrahpaşa</div>
+      <div class="footer-links">
+        <a href="about.html">Proje Hakkında</a>
+        <a href="team.html">Ekip</a>
+        <a href="contact.html">İletişim</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
